@@ -8,22 +8,29 @@ class CalculatorState extends State<StatefulCalculator> {
   String output = "";
   String generatedRawOperation = "";
   String displayOutput = "";
-
   final double baseButtonTextSize = 20.0;
+
+  final OperationResolver _resolver = OperationResolver();
 
   onPressed(String value) {
     try {
       if (value == "=") {
-        displayOutput = OperationResolver()
-            .consume(generatedRawOperation)
-            .resolve()
-            .toString();
+        displayOutput = resolve();
         generatedRawOperation = displayOutput;
       } else if (value == "CLEAR") {
         displayOutput = "";
         generatedRawOperation = "";
         return;
       } else {
+        if (!InputUtil.isNumber(value)) {
+          _resolver.consume(generatedRawOperation);
+          if (_resolver.shouldResolve()) {
+            displayOutput = resolve();
+            generatedRawOperation = displayOutput;
+          } else {
+            _resolver.undoAll();
+          }
+        }
         generatedRawOperation += InputUtil.isNumber(value) ? value : ' $value ';
       }
     } catch (e) {
@@ -39,6 +46,10 @@ class CalculatorState extends State<StatefulCalculator> {
       }
       displayOutput = "";
     });
+  }
+
+  String resolve() {
+    return _resolver.consume(generatedRawOperation).resolve().toString();
   }
 
   @override
@@ -78,6 +89,7 @@ class CalculatorState extends State<StatefulCalculator> {
             buildButton("-", baseButtonTextSize + 10)
           ]),
           Row(children: [
+            buildButton("0"),
             buildButton(".", baseButtonTextSize + 5),
             buildButton("+")
           ]),
@@ -90,23 +102,27 @@ class CalculatorState extends State<StatefulCalculator> {
     ));
   }
 
-  Widget buildButton(String btnVal, [double? fontSize]) {
+  Widget buildButton(String btnVal,
+      [double? fontSize, bool isExpanded = true]) {
+    double? evalFontSize = fontSize;
+    evalFontSize ??= baseButtonTextSize;
     final ButtonStyle btnStyle = ElevatedButton.styleFrom(
         textStyle: const TextStyle(fontSize: 100),
         backgroundColor: Colors.yellow.shade50);
-    double? evalFontSize = fontSize;
-    evalFontSize ??= baseButtonTextSize;
-    return Expanded(
-      child: OutlinedButton(
-        style: btnStyle,
-        child: Text(
-          btnVal,
-          style: TextStyle(fontSize: evalFontSize, fontWeight: FontWeight.bold),
-        ),
-        onPressed: () {
-          onPressed(btnVal);
-        },
+
+    final Widget outlinedButton = OutlinedButton(
+      style: btnStyle,
+      child: Text(
+        btnVal,
+        style: TextStyle(fontSize: evalFontSize, fontWeight: FontWeight.bold),
       ),
+      onPressed: () {
+        onPressed(btnVal);
+      },
     );
+    if (isExpanded) {
+      return Expanded(child: outlinedButton);
+    }
+    return outlinedButton;
   }
 }

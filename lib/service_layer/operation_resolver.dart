@@ -14,12 +14,16 @@ class OperationResolver {
   final RPNEvaluator evaluator = RPNEvaluator();
 
   OperationResolver consume(String rawOperationStr) {
-    List<String> parts = rawOperationStr.split(" ");
-    //TODO should convert infix to postfix.
-    operationContainer.clearStack();
-    operationContainer.push(parts[0]);
-    operationContainer.push(parts[2]);
-    operationContainer.push(parts[1]);
+    try {
+      List<String> parts = rawOperationStr.split(" ");
+      //TODO should convert infix to postfix.
+      operationContainer.clearStack();
+      operationContainer.push(parts[0]);
+      operationContainer.push(parts[2]);
+      operationContainer.push(parts[1]);
+    } catch (e) {
+      //temporary bail
+    }
     return this;
   }
 
@@ -29,6 +33,10 @@ class OperationResolver {
 
   void undo() {
     operationContainer.pop();
+  }
+
+  void undoAll() {
+    operationContainer.clearStack();
   }
 
   double resolve() {

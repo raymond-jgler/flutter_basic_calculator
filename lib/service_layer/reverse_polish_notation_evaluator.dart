@@ -63,14 +63,3 @@ class RPNEvaluator {
     return res;
   }
 }
-
-void main() {
-  final myStack = LocalStack<String>();
-
-  myStack.push('Green Eggs and Ham');
-  myStack.push('War and Peace');
-  myStack.push('Moby Dick');
-
-  RPNEvaluator evaluator = RPNEvaluator();
-  evaluator.withExpr(myStack);
-}
