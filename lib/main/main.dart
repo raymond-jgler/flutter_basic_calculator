@@ -1,5 +1,6 @@
-import 'package:calculator/calculator_widget.dart';
 import 'package:flutter/material.dart';
+
+import '../presentation_layer/calculator_widget_gateway.dart';
 
 void main() {
   runApp(const MainApp());
@@ -12,7 +13,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Calculator(title: 'Basic Calculator'),
+      home: CalculatorWidgetGateway(title: 'Basic Calculator'),
     );
   }
 }
