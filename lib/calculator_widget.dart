@@ -13,11 +13,9 @@ class Calculator extends StatefulWidget {
 }
 
 class CalculatorState extends State<Calculator> {
-  String output = "0";
-
+  String output = "";
   String generatedRawOperation = "";
   String displayOutput = "";
-  String operand = "";
 
   onPressed(String value) {
     try {
@@ -89,12 +87,7 @@ class CalculatorState extends State<Calculator> {
                 buildButton("3"),
                 buildButton("-")
               ]),
-              Row(children: [
-                buildButton("."),
-                buildButton("0"),
-                buildButton("00"),
-                buildButton("+")
-              ]),
+              Row(children: [buildButton("."), buildButton("+")]),
               Row(children: [
                 buildButton("CLEAR"),
                 buildButton("="),
@@ -117,7 +110,9 @@ class CalculatorState extends State<Calculator> {
           btnVal,
           style: TextStyle(fontSize: evalFontSize, fontWeight: FontWeight.bold),
         ),
-        onPressed: () => onPressed(btnVal),
+        onPressed: () {
+          onPressed(btnVal);
+        },
       ),
     );
   }

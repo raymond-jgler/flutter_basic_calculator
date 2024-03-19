@@ -13,13 +13,13 @@ class OperationResolver {
   final LocalStack<String> operationContainer = LocalStack();
   final RPNEvaluator evaluator = RPNEvaluator();
 
-  OperationResolver consume(String element) {
-    List<String> words = element.split(" ");
+  OperationResolver consume(String rawOperationStr) {
+    List<String> parts = rawOperationStr.split(" ");
     //TODO should convert infix to postfix.
     operationContainer.clearStack();
-    operationContainer.push(words[0]);
-    operationContainer.push(words[2]);
-    operationContainer.push(words[1]);
+    operationContainer.push(parts[0]);
+    operationContainer.push(parts[2]);
+    operationContainer.push(parts[1]);
     return this;
   }
 

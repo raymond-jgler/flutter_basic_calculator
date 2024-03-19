@@ -1,29 +1,29 @@
 class LocalStack<T> {
-  final _innerList = <T>[];
+  final listSimulator = <T>[];
 
   void push(T value) {
-    _innerList.add(value);
+    listSimulator.add(value);
   }
 
   T pop() {
-    return _innerList.removeLast();
+    return listSimulator.removeLast();
   }
 
   T peek() {
-    return _innerList.last;
+    return listSimulator.last;
   }
 
   bool isEmpty() {
-    return _innerList.isEmpty;
+    return listSimulator.isEmpty;
   }
 
   bool isAtLeastThreeElements() {
-    return _innerList.length >= 3;
+    return listSimulator.length >= 3;
   }
 
   void clearStack() {
-    while (_innerList.isNotEmpty) {
-      _innerList.removeLast();
+    while (listSimulator.isNotEmpty) {
+      listSimulator.removeLast();
     }
   }
 }
