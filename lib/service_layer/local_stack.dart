@@ -17,6 +17,10 @@ class LocalStack<T> {
     return _innerList.isEmpty;
   }
 
+  bool isAtLeastThreeElements() {
+    return _innerList.length >= 3;
+  }
+
   void clearStack() {
     while (_innerList.isNotEmpty) {
       _innerList.removeLast();

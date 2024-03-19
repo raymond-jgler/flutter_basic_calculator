@@ -1,3 +1,4 @@
+import 'package:calculator/service_layer/operation_resolver.dart';
 import 'package:flutter/material.dart';
 
 class Calculator extends StatefulWidget {
@@ -14,62 +15,38 @@ class Calculator extends StatefulWidget {
 class CalculatorState extends State<Calculator> {
   String output = "0";
 
-  String _output = "0";
-  double num1 = 0.0;
-  double num2 = 0.0;
+  String generatedRawOperation = "";
+  String displayOutput = "";
   String operand = "";
 
-  buttonPressed(String buttonText) {
-    if (buttonText == "CLEAR") {
-      _output = "0";
-      num1 = 0.0;
-      num2 = 0.0;
-      operand = "";
-    } else if (buttonText == "+" ||
-        buttonText == "-" ||
-        buttonText == "/" ||
-        buttonText == "X") {
-      num1 = double.parse(output);
-      operand = buttonText;
-      _output = num1.toString() + ' ' + operand;
-    } else if (buttonText == ".") {
-      if (_output.contains(".")) {
-        print("Already conatains a decimals");
+  onPressed(String value) {
+    try {
+      if (value == "=") {
+        displayOutput = OperationResolver()
+            .consume(generatedRawOperation)
+            .resolve()
+            .toString();
+        generatedRawOperation = displayOutput;
+      } else if (value == "CLEAR") {
+        displayOutput = "";
+        generatedRawOperation = "";
         return;
       } else {
-        _output = _output + buttonText;
+        generatedRawOperation +=
+            generatedRawOperation.isNotEmpty ? ' $value' : value;
       }
-    } else if (buttonText == "=") {
-      num2 = double.parse(output);
-
-      if (operand == "+") {
-        _output = (num1 + num2).toString();
-      }
-      if (operand == "-") {
-        _output = (num1 - num2).toString();
-      }
-      if (operand == "X") {
-        _output = (num1 * num2).toString();
-      }
-      if (operand == "/") {
-        _output = (num1 / num2).toString();
-      }
-
-      num1 = 0.0;
-      num2 = 0.0;
-      operand = "";
-    } else {
-      _output = _output + buttonText;
+    } catch (e) {
+      throw Exception(e);
     }
-
-    print(_output);
+    print(generatedRawOperation);
 
     setState(() {
-      try {
-        output = double.parse(_output).toStringAsFixed(2);
-      } on Exception catch (e) {
-        output = _output;
+      if (displayOutput.isNotEmpty) {
+        output = displayOutput;
+      } else {
+        output = generatedRawOperation;
       }
+      displayOutput = "";
     });
   }
 
@@ -127,18 +104,20 @@ class CalculatorState extends State<Calculator> {
         ));
   }
 
-  Widget buildButton(String buttonText) {
-    final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
+  Widget buildButton(String btnVal, [double? fontSize]) {
+    final ButtonStyle btnStyle = ElevatedButton.styleFrom(
         textStyle: const TextStyle(fontSize: 100),
         backgroundColor: Colors.yellow.shade50);
+    double? evalFontSize = fontSize;
+    evalFontSize ??= 20.0;
     return Expanded(
       child: OutlinedButton(
-        style: buttonStyle,
+        style: btnStyle,
         child: Text(
-          buttonText,
-          style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+          btnVal,
+          style: TextStyle(fontSize: evalFontSize, fontWeight: FontWeight.bold),
         ),
-        onPressed: () => buttonPressed(buttonText),
+        onPressed: () => onPressed(btnVal),
       ),
     );
   }
