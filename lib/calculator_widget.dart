@@ -1,3 +1,4 @@
+import 'package:calculator/service_layer/input_util.dart';
 import 'package:calculator/service_layer/operation_resolver.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,8 @@ class CalculatorState extends State<Calculator> {
   String generatedRawOperation = "";
   String displayOutput = "";
 
+  final double baseOperatorSize = 20.0;
+
   onPressed(String value) {
     try {
       if (value == "=") {
@@ -30,8 +33,7 @@ class CalculatorState extends State<Calculator> {
         generatedRawOperation = "";
         return;
       } else {
-        generatedRawOperation +=
-            generatedRawOperation.isNotEmpty ? ' $value' : value;
+        generatedRawOperation += InputUtil.isNumber(value) ? value : ' $value ';
       }
     } catch (e) {
       throw Exception(e);
@@ -79,15 +81,18 @@ class CalculatorState extends State<Calculator> {
                 buildButton("4"),
                 buildButton("5"),
                 buildButton("6"),
-                buildButton("X")
+                buildButton("X", baseOperatorSize - 4)
               ]),
               Row(children: [
                 buildButton("1"),
                 buildButton("2"),
                 buildButton("3"),
-                buildButton("-")
+                buildButton("-", baseOperatorSize + 10)
               ]),
-              Row(children: [buildButton("."), buildButton("+")]),
+              Row(children: [
+                buildButton(".", baseOperatorSize + 5),
+                buildButton("+")
+              ]),
               Row(children: [
                 buildButton("CLEAR"),
                 buildButton("="),
@@ -102,7 +107,7 @@ class CalculatorState extends State<Calculator> {
         textStyle: const TextStyle(fontSize: 100),
         backgroundColor: Colors.yellow.shade50);
     double? evalFontSize = fontSize;
-    evalFontSize ??= 20.0;
+    evalFontSize ??= baseOperatorSize;
     return Expanded(
       child: OutlinedButton(
         style: btnStyle,
